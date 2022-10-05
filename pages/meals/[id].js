@@ -1,5 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -8,22 +7,19 @@ import IngredientsTable from '../../components/mealspage/IngredientsTable';
 import PointText from '../../components/text/PointText';
 import Text from '../../components/text/Text';
 import Title from '../../components/text/Title';
-import classes from './meals.module.scss';
+import classes from '../../styles/meals.module.scss';
 import { Button } from '../../components/button/Button';
 import toast from 'react-hot-toast';
+import { useSingleMeal } from '../../hooks/meals';
 
-export const getSingleMeal = async ({ queryKey }) => {
-  const { data } = await axios.get(`/lookup.php?i=${queryKey[1]}`);
-  return data?.meals?.[0];
-};
 
 function SingleMealPage() {
   const router = useRouter();
   const { id } = router.query;
   const [isSaved, setIsSaved] = useState(false);
-  const {
-    data, isLoading, isError, error,
-  } = useQuery(['singleMeal', id], getSingleMeal);
+
+
+  const {data, isLoading, isError, error,} = useSingleMeal(id)
 
   useEffect(() => {
     if (localStorage.getItem('savedMeals')) {
@@ -49,7 +45,7 @@ function SingleMealPage() {
   const ingredients = Object.keys(data).filter((key) => key.startsWith('strIngredient'))
     .filter((key) => data[key] !== '' && data[key] !== null);
 
-  //   console.log(ingredients);
+
 
   const ingredientsWithMeasures = ingredients.map((key, index) => ({
     index: index + 1,

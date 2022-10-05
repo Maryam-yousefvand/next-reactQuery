@@ -1,49 +1,33 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+
 import React, { useEffect, useState } from 'react';
 import { BeatLoader } from 'react-spinners';
 import SearchBar from '../../components/mealspage/SearchBar';
 import PointText from '../../components/text/PointText';
-import classes from './meals.module.scss';
+import classes from '../../styles/meals.module.scss';
 import Categories from '../../components/categories/Categories';
 import SingleMealCard from '../../components/mealspage/SingleMealCard';
+
+import {useAllCategories,useSelectedCategory,useQueryMeals} from '../../hooks/meals'
+
 
 const override = {
   display: 'inline-block',
   margin: '0 auto',
 };
 
-const getCategories = async () => {
-  const { data } = await axios.get('/categories.php');
 
-  return data.categories;
-};
-
-const getMeals = async ({ queryKey }) => {
-  const { data } = await axios.get(`filter.php?c=${queryKey[1]}`);
-  return data?.meals || [];
-};
-
-const getQueriedMeals = async ({ queryKey }) => {
-  const { data } = await axios.get(`search.php?s=${queryKey[1]}`);
-  return data?.meals || [];
-};
 
 function Meals() {
+
+
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchText, setSearchText] = useState('');
   const [query, setQuery] = useState('');
-  const {
-    data: categories,
-    isLoading: categoriesIsLoading,
-    isError: categoriesIsError,
-  } = useQuery(['categories'], getCategories);
 
-  const { data, isLoading, isError } = useQuery(['mealsByCategory', selectedCategory], getMeals);
+  const {data:categories, isLoading:categoriesIsLoading, isError:categoriesIsError} = useAllCategories()
+  const { data, isLoading, isError } = useSelectedCategory(selectedCategory);
+  const {data: queriedData, isLoading: queriedIsLoading, isError: queriedIsError} = useQueryMeals(query);
 
-  const {
-    data: queriedData, isLoading: queriedIsLoading, isError: queriedIsError,
-  } = useQuery(['mealsByCategory', query], getQueriedMeals);
 
   useEffect(() => {
     if (categories) {
@@ -110,7 +94,7 @@ function Meals() {
           </div>
         ) : (null)}
 
-        {!queriedIsLoading && !queriedIsError && queriedData
+         {!queriedIsLoading && !queriedIsError && queriedData
          && queriedData.map((meal) => (
            <SingleMealCard meal={meal} key={meal.idMeal} />
          ))}

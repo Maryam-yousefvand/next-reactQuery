@@ -1,21 +1,13 @@
 import '../styles/globals.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import axios from 'axios';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Layout from '../components/layout/Layout';
 import { useEffect } from 'react';
 import { getSingleMeal } from './meals/[id]';
+import { queryClient } from '../api';
 
-axios.defaults.baseURL = 'https://www.themealdb.com/api/json/v1/1';
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      cacheTime: 1 * 60 * 60 * 1000,
-      staleTime: 1 * 60 * 60 * 1000,
-    },
-  },
-});
+
 
 function MyApp({ Component, pageProps }) {
 
@@ -29,8 +21,6 @@ function MyApp({ Component, pageProps }) {
       localStorage.setItem("savedMeals" , JSON.stringify([]))
     }
     
-  
-   
   }, [])
   
   return (

@@ -18,7 +18,7 @@ function HeroSection() {
           <Text>a listing website of meal recipe</Text>
           <div className={classes.hero__buttons}>
             <ButtonWithLink link="/meals" variant="primary">Explore Meals</ButtonWithLink>
-            <ButtonWithLink link="sevedMeals">Saved Meals</ButtonWithLink>
+            <ButtonWithLink link="SavedMeals">Saved Meals</ButtonWithLink>
           </div>
         </div>
         <div className={classes.hero__img}>

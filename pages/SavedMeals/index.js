@@ -2,22 +2,27 @@ import { useQueries } from '@tanstack/react-query'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { BeatLoader } from 'react-spinners'
-import PointText from '../components/text/PointText'
-import Text from '../components/text/Text'
-import Title from '../components/text/Title'
-import { getSingleMeal } from './meals/[id]'
-import classes from './SavedMeals.module.scss'
+import PointText from '../../components/text/PointText'
+import Text from '../../components/text/Text'
+import Title from '../../components/text/Title'
+import classes from '../../styles/SavedMeals.module.scss'
+
+
+// ******************************************
+
+import { client } from '../../api'
+const getSingleMeal = async ({ queryKey }) => {
+  const { data } = await client.get(`/lookup.php?i=${queryKey[1]}`);
+  return data?.meals?.[0];
+};
+
+// *******************************************
 
 const SavedMeals = () => {
 
   const [savedMealsId, setSavedMealsId] = useState([])
 
-  useEffect(() => {
-    if(localStorage.getItem("savedMeals")){
-      setSavedMealsId(JSON.parse(localStorage.getItem("savedMeals")))
-    }
-  
-  }, [])
+ 
 
   const queries = savedMealsId.map((id)=>(
    {
@@ -27,10 +32,21 @@ const SavedMeals = () => {
   ))
 
   const result = useQueries({queries})
+  console.log(result);
+
+  useEffect(() => {
+    if(localStorage.getItem("savedMeals")){
+      setSavedMealsId(JSON.parse(localStorage.getItem("savedMeals")))
+    }
+  
+  }, [])
+
   
   return (
     <div className={classes.pageWrapper}>
       <Title variant="primary" className={classes.pageTitle}>My Saved Meal List</Title>
+
+      
       <div className={classes.list_container}>
 
         {savedMealsId.length <= 0 && <Text>No seved Meals</Text>}
@@ -42,7 +58,7 @@ const SavedMeals = () => {
 
             return (
               <Link href={`/meals/${data.idMeal}`} key={data.idMeal}>
-              {/* <Link href={`/meals/${data.idMeal}`} key={data.idMeal}></Link> */}
+     
                 <a className={classes.singleMeal}>
                   <Title variant='secondary' className={classes.mealTitle}>{data.strMeal}</Title>
                   <PointText>
@@ -62,6 +78,8 @@ const SavedMeals = () => {
 
 
       </div>
+
+      
     </div>
   )
 }
