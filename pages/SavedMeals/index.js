@@ -1,87 +1,86 @@
-import { useQueries } from '@tanstack/react-query'
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import { BeatLoader } from 'react-spinners'
-import PointText from '../../components/text/PointText'
-import Text from '../../components/text/Text'
-import Title from '../../components/text/Title'
-import classes from '../../styles/SavedMeals.module.scss'
+import { useQueries } from '@tanstack/react-query';
+
+import React, { useEffect, useState } from 'react';
+import { BeatLoader } from 'react-spinners';
+
+import { Box, Link, SimpleGrid, Text, UnorderedList } from '@chakra-ui/react';
+import ListItems from '../../components/ListItems/ListItems';
 
 
-// ******************************************
+import getSingleMeal from '../../api/meals';
 
-import { client } from '../../api'
-const getSingleMeal = async ({ queryKey }) => {
-  const { data } = await client.get(`/lookup.php?i=${queryKey[1]}`);
-  return data?.meals?.[0];
-};
 
-// *******************************************
+
+
 
 const SavedMeals = () => {
+	const [savedMealsId, setSavedMealsId] = useState([]);
 
-  const [savedMealsId, setSavedMealsId] = useState([])
+	const queries = savedMealsId.map(id => ({
+		queryKey: ['singleMeal', id],
+		queryFn: getSingleMeal,
+	}));
 
- 
+	const result = useQueries({ queries });
+	console.log(getSingleMeal);
 
-  const queries = savedMealsId.map((id)=>(
-   {
-    queryKey : ['singleMeal', id],
-    queryFn : getSingleMeal
-   }
-  ))
+	useEffect(() => {
+		if (localStorage.getItem('savedMeals')) {
+			setSavedMealsId(JSON.parse(localStorage.getItem('savedMeals')));
+		}
+	}, []);
 
-  const result = useQueries({queries})
-  console.log(result);
+	return (
+		<Box py="6rem">
+			<Text
+				as="h2"
+				mb="2rem"
+				fontSize="3rem"
+				color="#9f9f9f"
+				textTransform="capitalize"
+			>
+				My Saved Meal List
+			</Text>
 
-  useEffect(() => {
-    if(localStorage.getItem("savedMeals")){
-      setSavedMealsId(JSON.parse(localStorage.getItem("savedMeals")))
-    }
-  
-  }, [])
+			<SimpleGrid minChildWidth="250px" gap="2rem">
+				{savedMealsId.length <= 0 && <Text>No seved Meals</Text>}
 
-  
-  return (
-    <div className={classes.pageWrapper}>
-      <Title variant="primary" className={classes.pageTitle}>My Saved Meal List</Title>
+				{result &&
+					result.map(({ data, isLoading }, index) => {
+						if (isLoading) {
+							return (
+								<BeatLoader color="#fff" key={savedMealsId[index]}></BeatLoader>
+							);
+						}
 
-      
-      <div className={classes.list_container}>
+						return (
+							<Link href={`/meals/${data.idMeal}`} key={data.idMeal} h="100%">
+								<Box
+									bg="#393b40"
+									p="2rem"
+									borderRadius="6px"
+									display="block"
+									h="100%"
+								>
+									<Text
+										as="p"
+										color="#717171"
+										fontSize="1.5rem"
+										
+									>
+										{data.strMeal}
+									</Text>
+									<UnorderedList justify="center" align="center">
+										<ListItems>{data.strCategory}</ListItems>
+										<ListItems>{data.strArea}</ListItems>
+									</UnorderedList>
+								</Box>
+							</Link>
+						);
+					})}
+			</SimpleGrid>
+		</Box>
+	);
+};
 
-        {savedMealsId.length <= 0 && <Text>No seved Meals</Text>}
-
-        {result && result.map(({data, isLoading} , index) => {
-            if(isLoading) {
-              return(<BeatLoader color='#fff' key={savedMealsId[index]}></BeatLoader>)
-            }
-
-            return (
-              <Link href={`/meals/${data.idMeal}`} key={data.idMeal}>
-     
-                <a className={classes.singleMeal}>
-                  <Title variant='secondary' className={classes.mealTitle}>{data.strMeal}</Title>
-                  <PointText>
-                  Category:
-                  {' '}
-                  {data.strCategory}
-                </PointText>
-                <PointText>
-                  Area:
-                  {' '}
-                  {data.strArea}
-                </PointText>
-                </a>
-              </Link>
-            )
-         })}
-
-
-      </div>
-
-      
-    </div>
-  )
-}
-
-export default SavedMeals
+export default SavedMeals;

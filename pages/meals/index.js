@@ -1,106 +1,116 @@
-
 import React, { useEffect, useState } from 'react';
 import { BeatLoader } from 'react-spinners';
 import SearchBar from '../../components/mealspage/SearchBar';
-import PointText from '../../components/text/PointText';
-import classes from '../../styles/meals.module.scss';
 import Categories from '../../components/categories/Categories';
 import SingleMealCard from '../../components/mealspage/SingleMealCard';
 
-import {useAllCategories,useSelectedCategory,useQueryMeals} from '../../hooks/meals'
-
+import {
+	useAllCategories,
+	useSelectedCategory,
+	useQueryMeals,
+} from '../../hooks/meals';
+import { Box, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react';
 
 const override = {
-  display: 'inline-block',
-  margin: '0 auto',
+	display: 'inline-block',
+	margin: '0 auto',
 };
 
-
-
 function Meals() {
+	const [selectedCategory, setSelectedCategory] = useState('');
+	const [searchText, setSearchText] = useState('');
+	const [query, setQuery] = useState('');
 
+	const {
+		data: categories,
+		isLoading: categoriesIsLoading,
+		isError: categoriesIsError,
+	} = useAllCategories();
+	const { data, isLoading, isError } = useSelectedCategory(selectedCategory);
+	const {
+		data: queriedData,
+		isLoading: queriedIsLoading,
+		isError: queriedIsError,
+	} = useQueryMeals(query);
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [searchText, setSearchText] = useState('');
-  const [query, setQuery] = useState('');
+	useEffect(() => {
+		if (categories) {
+			setSelectedCategory(categories[0].strCategory);
+		}
+	}, [categories]);
 
-  const {data:categories, isLoading:categoriesIsLoading, isError:categoriesIsError} = useAllCategories()
-  const { data, isLoading, isError } = useSelectedCategory(selectedCategory);
-  const {data: queriedData, isLoading: queriedIsLoading, isError: queriedIsError} = useQueryMeals(query);
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			if (searchText) {
+				setQuery(searchText);
+				setSelectedCategory('');
+			} else {
+				setQuery('');
+				if (categories) {
+					setSelectedCategory(categories[0].strCategory);
+				}
+			}
+		}, 300);
+		return () => {
+			setQuery('');
+			clearTimeout(timeout);
+		};
+	}, [searchText, categories]);
 
+	return (
+		<Box as="div" py="5rem">
+			<SearchBar searchText={searchText} setSearchText={setSearchText} />
+			<Flex align="flex-start" justify="flex-start" gap="1rem">
+				<Text as="p" fontSize="1.5rem" color="#717171" pb="50px" pt="10px">
+					search meals or select categories from below
+				</Text>
+			</Flex>
+			<Categories
+				categories={categories}
+				categoriesIsLoading={categoriesIsLoading}
+				categoriesIsError={categoriesIsError}
+				selectedCategory={selectedCategory}
+				setSelectedCategory={setSelectedCategory}
+				setQuery={setQuery}
+			/>
 
-  useEffect(() => {
-    if (categories) {
-      setSelectedCategory(categories[0].strCategory);
-    }
-  }, [categories]);
+			{isLoading || categoriesIsLoading ? (
+				<Flex py="50px" justify="center">
+					<BeatLoader
+						color="#fff"
+						loading={isLoading || categoriesIsLoading}
+						cssOverride={override}
+						size="20"
+					/>
+				</Flex>
+			) : null}
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (searchText) {
-        setQuery(searchText);
-        setSelectedCategory('');
-      } else {
-        setQuery('');
-        if (categories) {
-          setSelectedCategory(categories[0].strCategory);
-        }
-      }
-    }, 300);
-    return () => {
-      setQuery('');
-      clearTimeout(timeout);
-    };
-  }, [searchText, categories]);
+			<SimpleGrid gap="1rem" mt="50px" minChildWidth="300px">
+				{!isLoading &&
+					!isError &&
+					data &&
+					data.map(meal => <SingleMealCard meal={meal} key={meal.idMeal} />)}
 
-  return (
-    <div className={classes.meals__page}>
-      <SearchBar searchText={searchText} setSearchText={setSearchText} />
-      <PointText>search meals or select categories from below</PointText>
-      <Categories
-        categories={categories}
-        categoriesIsLoading={categoriesIsLoading}
-        categoriesIsError={categoriesIsError}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        setQuery={setQuery}
+				{queriedIsLoading ? (
+					<Flex py="50px" justify="center">
+						<BeatLoader
+							color="#fff"
+							loading={queriedIsLoading}
+							cssOverride={override}
+							size="20"
+						/>
+					</Flex>
+				) : null}
 
-      />
-
-      {isLoading || categoriesIsLoading ? (
-        <div className={classes.loadingSpinner}>
-          <BeatLoader
-            color="#fff"
-            loading={isLoading || categoriesIsLoading}
-            cssOverride={override}
-            size="20"
-          />
-        </div>
-      ) : (null)}
-
-      <div className={classes.meals__container}>
-        {!isLoading && !isError && data && data.map((meal) => (
-          <SingleMealCard meal={meal} key={meal.idMeal} />
-        ))}
-
-        {queriedIsLoading ? (
-          <div className={classes.loadingSpinner}>
-            <BeatLoader
-              color="#fff"
-              loading={queriedIsLoading}
-              cssOverride={override}
-              size="20"
-            />
-          </div>
-        ) : (null)}
-
-         {!queriedIsLoading && !queriedIsError && queriedData
-         && queriedData.map((meal) => (
-           <SingleMealCard meal={meal} key={meal.idMeal} />
-         ))}
-      </div>
-    </div>
-  );
+				{!queriedIsLoading &&
+					!queriedIsError &&
+					queriedData &&
+					queriedData.map(meal => (
+						<SingleMealCard meal={meal} key={meal.idMeal} />
+					))}
+			</SimpleGrid>
+		</Box>
+	);
 }
 
 export default Meals;

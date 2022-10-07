@@ -1,13 +1,15 @@
-import clsx from 'clsx';
+import { Input } from '@chakra-ui/react';
+
 import React from 'react';
 
-import classes from './SearchBar.module.scss';
 
 function SearchBar({ searchText, setSearchText, className }) {
   return (
-    <input
-      placeholder="search meals"
-      className={clsx(classes.input, className)}
+    <Input
+      placeholder="search meals" maxW="500px" bg="#313235" 
+      w="100%" h="40px" borderRadius='5px' padding='3rem 2rem'  fontSize='2rem'
+      outline="none" color="white" borderWidth='2px'
+      borderColor='transparent' borderStyle='solid' focusBorderColor='#e85d04'
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
     />
