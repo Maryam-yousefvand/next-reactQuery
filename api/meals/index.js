@@ -1,6 +1,6 @@
 
-import React, { useCallback, useMemo } from 'react';
-import {client} from '../index'
+
+import {client} from '@api/index'
 
 
 const getCategories =async () => {

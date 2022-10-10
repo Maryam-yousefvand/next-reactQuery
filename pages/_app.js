@@ -1,13 +1,13 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import theme from '../theme/theme';
-import '../styles/globals.css';
+import theme from '@theme/theme';
+import '@styles/globals.css';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import Layout from '../components/layout/Layout';
+import Layout from '@components/layout/Layout';
 import { useEffect } from 'react';
-import { getSingleMeal } from './meals/[id]';
-import { queryClient } from '../api';
+import {getSingleMeal } from '@api/meals';
+import { queryClient } from '@api/index';
 
 function MyApp({ Component, pageProps }) {
 	useEffect(() => {

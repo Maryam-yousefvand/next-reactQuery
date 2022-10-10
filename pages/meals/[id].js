@@ -4,8 +4,9 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState} from 'react';
 import { BeatLoader } from 'react-spinners';
 
+
 import toast from 'react-hot-toast';
-import { useSingleMeal,useSelectedCategory } from '../../hooks/meals';
+import { useSingleMeal,useSelectedCategory } from '@hooks/meals';
 import {
 	Box,
 	Button,
@@ -18,12 +19,12 @@ import {
 } from '@chakra-ui/react';
 
 import dynamic from 'next/dynamic';
-import { getMeals } from '../../api/meals';
+
 
 function SingleMealPage() {
 	
-    const IngredientsTable = dynamic(() => import('../../components/mealspage/IngredientsTable'))
-	const ListItems =  dynamic(() => import('../../components/ListItems/ListItems'))
+    const IngredientsTable = dynamic(() => import('@components/mealspage/IngredientsTable'))
+	const ListItems =  dynamic(() => import('@components/ListItems/ListItems'))
 
 	const router = useRouter();
 	const { id } = router.query;

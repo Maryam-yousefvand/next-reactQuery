@@ -5,7 +5,7 @@ import {
 	useAllCategories,
 	useSelectedCategory,
 	useQueryMeals,
-} from '../../hooks/meals';
+} from '@hooks/meals';
 import { Box, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 
@@ -15,9 +15,9 @@ const override = {
 };
 
 function Meals() {
-    const SearchBar = dynamic(()=> import('../../components/mealspage/SearchBar'))
-	const Categories = dynamic(() => import('../../components/categories/Categories'))
-	const SingleMealCard = dynamic(()=> import('../../components/mealspage/SingleMealCard'))
+    const SearchBar = dynamic(()=> import('@components/mealspage/SearchBar'))
+	const Categories = dynamic(() => import('@components/categories/Categories'))
+	const SingleMealCard = dynamic(()=> import('@components/mealspage/SingleMealCard'))
 
 	const [selectedCategory, setSelectedCategory] = useState('');
 	const [searchText, setSearchText] = useState('');

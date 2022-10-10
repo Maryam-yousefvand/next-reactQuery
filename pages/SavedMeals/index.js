@@ -2,7 +2,7 @@ import { useQueries } from '@tanstack/react-query';
 import React, { useEffect ,useState } from 'react';
 import { BeatLoader } from 'react-spinners';
 import { Box, Link, SimpleGrid, Text, UnorderedList } from '@chakra-ui/react';
-import getSingleMeal from '../../api/meals';
+import getSingleMeal from '@api/meals';
 import dynamic from 'next/dynamic';
 
 
@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 
 const SavedMeals = () => {
 
-	const ListItems = dynamic(() => import('../../components/ListItems/ListItems')) 
+	const ListItems = dynamic(() => import('@components/ListItems/ListItems')) 
 	const [savedMealsId, setSavedMealsId] = useState([]);
 
 	const queries = savedMealsId.map(id => ({

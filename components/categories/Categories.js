@@ -13,7 +13,7 @@ function Categories({
 	setQuery,
 }) {
 
-	const CategoryItem = dynamic(()=> import('./CategoryItem'))
+	const CategoryItem = dynamic(()=> import('@components/categories/CategoryItem'))
 
 	if (categoriesIsError) {
 		return 'error';

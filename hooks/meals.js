@@ -3,7 +3,7 @@ import {
 	getMeals,
 	getQueriedMeals,
 	getSingleMeal,
-} from '../api/meals';
+} from '@api/meals';
 import { useQuery } from '@tanstack/react-query';
 
 
