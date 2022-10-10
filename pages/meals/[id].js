@@ -1,10 +1,11 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+
+import { useRouter } from 'next/router'
+import React, { useEffect, useState} from 'react';
 import { BeatLoader } from 'react-spinners';
-import IngredientsTable from '../../components/mealspage/IngredientsTable';
+
 import toast from 'react-hot-toast';
-import { useSingleMeal } from '../../hooks/meals';
+import { useSingleMeal,useSelectedCategory } from '../../hooks/meals';
 import {
 	Box,
 	Button,
@@ -15,14 +16,27 @@ import {
 	Text,
 	UnorderedList,
 } from '@chakra-ui/react';
-import ListItems from '../../components/ListItems/ListItems';
+
+import dynamic from 'next/dynamic';
+import { getMeals } from '../../api/meals';
 
 function SingleMealPage() {
+	
+    const IngredientsTable = dynamic(() => import('../../components/mealspage/IngredientsTable'))
+	const ListItems =  dynamic(() => import('../../components/ListItems/ListItems'))
+
 	const router = useRouter();
 	const { id } = router.query;
 	const [isSaved, setIsSaved] = useState(false);
 
+
+
 	const { data, isLoading, isError, error } = useSingleMeal(id);
+
+
+	if (isError) {
+		return <Text>{error}</Text>
+	}
 
 	useEffect(() => {
 		if (localStorage.getItem('savedMeals')) {
@@ -37,9 +51,7 @@ function SingleMealPage() {
 		}
 	}, [id]);
 
-	if (isError) {
-		return <Text>{error}</Text>;
-	}
+
 
 	if (isLoading && !data) {
 		return <BeatLoader color="#fff" />;
@@ -71,55 +83,61 @@ function SingleMealPage() {
 	};
 
 	return (
-		<Box py="10rem">
-			<Flex justify="flex-start" align="flex-start" gap="5rem">
-				<Box>
-					<Image src={data.strMealThumb} width={300} height={300} />
-				</Box>
-				<Box>
-					<Text as="h2" fontSize="3rem" color="#717171">
-						{data.strMeal}
-					</Text>
 
-					<UnorderedList justify="center" align="center">
-						<ListItems>{data.strCategory}</ListItems>
-						<ListItems>{data.strArea}</ListItems>
-						<ListItems>{data?.strTags?.split(',').join(', ')}</ListItems>
+		<>
+		{id ? (
+					<Box py="10rem">
+					<Flex justify="flex-start" align="flex-start" gap="5rem">
+						<Box>
+							<Image src={data.strMealThumb} width="300px" height="300px" />
+						</Box>
+						<Box>
+							<Text as="h2" fontSize="3rem" color="#717171">
+								{data.strMeal}
+							</Text>
+		
+							<UnorderedList justify="center" align="center">
+								<ListItems>{data.strCategory}</ListItems>
+								<ListItems>{data.strArea}</ListItems>
+								<ListItems>{data?.strTags?.split(',').join(', ')}</ListItems>
+							</UnorderedList>
+		
+							<Button
+								mt="2rem"
+								bg="btn.primary"
+								py="2rem"
+								px="3rem"
+								fontSize="1.8rem"
+								onClick={handleSaveButtonClick}
+							>
+								{isSaved ? <>Remove</> : <>Save</>}
+							</Button>
+						</Box>
+					</Flex>
+		
+					<Box mt="10rem">
+						<IngredientsTable ingredientsWithMeasures={ingredientsWithMeasures} />
+					</Box>
+					<UnorderedList mt="10rem">
+						<Text as="h2" mb="2rem" fontSize="3rem">
+							instructions
+						</Text>
+						{data.strInstructions
+							.split('.')
+							.filter(sentence => sentence !== '')
+							.map(sentence => (
+								<ListItem fontSize="1rem" color="text" py="10px" key={sentence}>
+									<Flex align="center" justify="flex-start">
+										<ListIcon as={Circle} bg="bgPrimary" fontSize=".5rem" />
+										<Box gap="1rem">{sentence}</Box>
+									</Flex>
+								</ListItem>
+							))}
 					</UnorderedList>
-
-					<Button
-						mt="2rem"
-						bg="#e85d04"
-						py="2rem"
-						px="3rem"
-						fontSize="1.8rem"
-						onClick={handleSaveButtonClick}
-					>
-						{isSaved ? <>Remove</> : <>Save</>}
-					</Button>
 				</Box>
-			</Flex>
+		) : (null)}
 
-			<Box mt="10rem">
-				<IngredientsTable ingredientsWithMeasures={ingredientsWithMeasures} />
-			</Box>
-			<UnorderedList mt="10rem">
-				<Text as="h2" mb="2rem" fontSize="3rem">
-					instructions
-				</Text>
-				{data.strInstructions
-					.split('.')
-					.filter(sentence => sentence !== '')
-					.map(sentence => (
-						<ListItem fontSize="1rem" color="#717171" py="10px" key={sentence}>
-							<Flex align="center" justify="flex-start">
-								<ListIcon as={Circle} bg="#e85d04" fontSize=".5rem" />
-								<Box gap="1rem">{sentence}</Box>
-							</Flex>
-						</ListItem>
-					))}
-			</UnorderedList>
-		</Box>
+		</>
 	);
 }
 

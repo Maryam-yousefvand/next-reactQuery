@@ -1,19 +1,17 @@
 import { useQueries } from '@tanstack/react-query';
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect ,useState } from 'react';
 import { BeatLoader } from 'react-spinners';
-
 import { Box, Link, SimpleGrid, Text, UnorderedList } from '@chakra-ui/react';
-import ListItems from '../../components/ListItems/ListItems';
-
-
 import getSingleMeal from '../../api/meals';
+import dynamic from 'next/dynamic';
 
 
 
 
 
 const SavedMeals = () => {
+
+	const ListItems = dynamic(() => import('../../components/ListItems/ListItems')) 
 	const [savedMealsId, setSavedMealsId] = useState([]);
 
 	const queries = savedMealsId.map(id => ({
@@ -21,8 +19,9 @@ const SavedMeals = () => {
 		queryFn: getSingleMeal,
 	}));
 
-	const result = useQueries({ queries });
-	console.log(getSingleMeal);
+	const result =   useQueries({ queries });
+
+	
 
 	useEffect(() => {
 		if (localStorage.getItem('savedMeals')) {
@@ -49,7 +48,7 @@ const SavedMeals = () => {
 					result.map(({ data, isLoading }, index) => {
 						if (isLoading) {
 							return (
-								<BeatLoader color="#fff" key={savedMealsId[index]}></BeatLoader>
+								<BeatLoader color="white" key={savedMealsId[index]}></BeatLoader>
 							);
 						}
 
@@ -64,7 +63,7 @@ const SavedMeals = () => {
 								>
 									<Text
 										as="p"
-										color="#717171"
+										color="text"
 										fontSize="1.5rem"
 										
 									>

@@ -13,7 +13,7 @@ import React from 'react';
 function TdTable ({td})  {
 	return(
 		<Td p=".5rem" border="none">
-		<Text as="p" color="#717171" fontSize="1rem" lineHeight="1.8rem">
+		<Text as="p" color="text" fontSize="1rem" lineHeight="1.8rem">
 			{td}
 		</Text>
 	</Td>

@@ -1,8 +1,8 @@
 import { Flex } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 import React from 'react';
 import BeatLoader from 'react-spinners/BeatLoader';
 
-import CategoryItem from './CategoryItem';
 
 function Categories({
 	categories,
@@ -12,12 +12,16 @@ function Categories({
 	setSelectedCategory,
 	setQuery,
 }) {
+
+	const CategoryItem = dynamic(()=> import('./CategoryItem'))
+
 	if (categoriesIsError) {
 		return 'error';
 	}
 	if (categoriesIsLoading) {
-		return <BeatLoader loading={categoriesIsLoading} color="#fff" />;
+		return <BeatLoader loading={categoriesIsLoading} color="white" />;
 	}
+	
 
 	return (
 		<Flex mt="2rem" wrap="wrap" gap="1rem">

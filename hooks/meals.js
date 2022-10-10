@@ -6,6 +6,8 @@ import {
 } from '../api/meals';
 import { useQuery } from '@tanstack/react-query';
 
+
+
 const useAllCategories = () => {
 	return useQuery(['categories'], getCategories);
 };

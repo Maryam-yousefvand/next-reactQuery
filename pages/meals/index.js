@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { BeatLoader } from 'react-spinners';
-import SearchBar from '../../components/mealspage/SearchBar';
-import Categories from '../../components/categories/Categories';
-import SingleMealCard from '../../components/mealspage/SingleMealCard';
 
 import {
 	useAllCategories,
@@ -10,6 +7,7 @@ import {
 	useQueryMeals,
 } from '../../hooks/meals';
 import { Box, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 
 const override = {
 	display: 'inline-block',
@@ -17,6 +15,10 @@ const override = {
 };
 
 function Meals() {
+    const SearchBar = dynamic(()=> import('../../components/mealspage/SearchBar'))
+	const Categories = dynamic(() => import('../../components/categories/Categories'))
+	const SingleMealCard = dynamic(()=> import('../../components/mealspage/SingleMealCard'))
+
 	const [selectedCategory, setSelectedCategory] = useState('');
 	const [searchText, setSearchText] = useState('');
 	const [query, setQuery] = useState('');
@@ -25,8 +27,10 @@ function Meals() {
 		data: categories,
 		isLoading: categoriesIsLoading,
 		isError: categoriesIsError,
-	} = useAllCategories();
-	const { data, isLoading, isError } = useSelectedCategory(selectedCategory);
+	} = useMemo(() => useAllCategories());
+
+	const { data, isLoading, isError } =  useMemo(()=>useSelectedCategory(selectedCategory));
+	
 	const {
 		data: queriedData,
 		isLoading: queriedIsLoading,
@@ -61,7 +65,7 @@ function Meals() {
 		<Box as="div" py="5rem">
 			<SearchBar searchText={searchText} setSearchText={setSearchText} />
 			<Flex align="flex-start" justify="flex-start" gap="1rem">
-				<Text as="p" fontSize="1.5rem" color="#717171" pb="50px" pt="10px">
+				<Text as="p" fontSize="1.5rem" color="text" pb="50px" pt="10px">
 					search meals or select categories from below
 				</Text>
 			</Flex>
@@ -77,7 +81,7 @@ function Meals() {
 			{isLoading || categoriesIsLoading ? (
 				<Flex py="50px" justify="center">
 					<BeatLoader
-						color="#fff"
+						color="white"
 						loading={isLoading || categoriesIsLoading}
 						cssOverride={override}
 						size="20"
@@ -94,7 +98,7 @@ function Meals() {
 				{queriedIsLoading ? (
 					<Flex py="50px" justify="center">
 						<BeatLoader
-							color="#fff"
+							color="white"
 							loading={queriedIsLoading}
 							cssOverride={override}
 							size="20"
