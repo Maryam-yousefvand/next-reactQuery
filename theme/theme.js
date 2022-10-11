@@ -10,12 +10,16 @@ const theme = extendTheme({
 	//  bg colors
 	 bgGray:"#313235",
 	 bgPrimary:"#e85d04",
+	 bgBox:"#393b40",
 
 
     // button bg-color
 	 btn :{
 		gray:"#313235",
-		primary:"#e85d04"
+		primary:"#e85d04",
+		cornsilk:"#FFF8DC",
+		Blanched:"#FFDEAD"
+
 	 },
 	 border:{
         primary:"#e85d04",

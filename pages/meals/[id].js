@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { useRouter } from 'next/router'
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useMemo, useState} from 'react';
 import { BeatLoader } from 'react-spinners';
 
 
@@ -59,16 +59,17 @@ function SingleMealPage() {
 		return <BeatLoader color="#fff" />;
 	}
     // console.log(data);
-	const ingredients = Object.keys(data)
+	const ingredients =
+		Object.keys(data)
 		.filter(key => key.startsWith('strIngredient'))
 		.filter(key => data[key] !== '' && data[key] !== null);
-    console.log(ingredients )
-	const ingredientsWithMeasures = ingredients.map((key, index) => ({
+   
+	const ingredientsWithMeasures =  ingredients.map((key, index) => ({
 		index: index + 1,
 		ingredient: data[key],
 		measure: data[`strMeasure${index + 1}`],
 	}));
-	console.log(ingredientsWithMeasures);
+	
 	const handleSaveButtonClick = async () => {
 		const savedMeals = JSON.parse(localStorage.getItem('savedMeals'));
 		if (!isSaved) {
@@ -99,9 +100,20 @@ function SingleMealPage() {
 							</Text>
 		
 							<UnorderedList justify="center" align="center">
-								<ListItems>{data.strCategory}</ListItems>
-								<ListItems>{data.strArea}</ListItems>
-								<ListItems>{data?.strTags?.split(',').join(', ')}</ListItems>
+								{data?.strCategory? (
+									<ListItems> Category: {" "}  {data.strCategory}</ListItems>
+								):(null)}
+
+								{data?.strArea? (
+									<ListItems>Area: {" "} {data.strArea}</ListItems>
+								) : (null)}
+								
+								
+								{data?.strTags? (
+										<ListItems>Tags: {" "}  {data?.strTags?.split(',').join(', ')}</ListItems>
+								) : (null)
+								}
+							
 							</UnorderedList>
 		
 							<Button

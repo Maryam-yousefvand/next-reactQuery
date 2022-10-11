@@ -6,6 +6,7 @@ import {
 	Tr,
 	Td,
 	TableContainer,
+	useColorMode,
 } from '@chakra-ui/react';
 import React from 'react';
 
@@ -21,6 +22,9 @@ function TdTable ({td})  {
 }
 
 function IngredientsTable({ ingredientsWithMeasures }) {
+	const {colorMode} = useColorMode('dark')
+	const isDark = colorMode === 'dark'
+	console.log(isDark);
 	return (
 		<Box>
 			<Text as="h2" mb="2rem" fontSize="3rem">
@@ -31,9 +35,11 @@ function IngredientsTable({ ingredientsWithMeasures }) {
 				<Table>
 					<Tbody>
 						{ingredientsWithMeasures.map(ingredient => (
+
 							<Tr
-								_even={{ bg: '#303134' }}
-								bg="#2a2b2e"
+							
+								_even={isDark?  {bg: 'bgGray'}: {bg: 'btn.cornsilk'}}
+								bg={isDark? ("#2a2b2e"):("btn.Blanched")}
 								w="100%"
 								_hover={{ bg: 'rgb(25, 26, 28)' }}
 								key={ingredient.index}

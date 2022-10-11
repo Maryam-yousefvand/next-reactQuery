@@ -25,7 +25,9 @@ function NavBar() {
 			</Link>
 
 			<Flex>
-			<Button onClick={toggleColorMode}>
+			<Button onClick={toggleColorMode} bg={colorMode==='light'? ("btn.cornsilk") :(null)}
+			
+			>
                 {colorMode === 'dark' ? (<SunIcon color='white'  w={6} h={6}/>) : (<MoonIcon w={6} h={6}/>)}
            </Button>
 			</Flex>

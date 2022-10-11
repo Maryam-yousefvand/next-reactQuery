@@ -31,8 +31,6 @@ export{
     getMeals,
     getQueriedMeals,
     getSingleMeal
-   
-    
 }
 
 export default getSingleMeal

@@ -1,15 +1,22 @@
 import { useQueries } from '@tanstack/react-query';
-import React, { useEffect ,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BeatLoader } from 'react-spinners';
-import { Box, Link, SimpleGrid, Text, UnorderedList } from '@chakra-ui/react';
+import {
+	Box,
+	Link,
+	SimpleGrid,
+	Text,
+	UnorderedList,
+	useColorMode,
+} from '@chakra-ui/react';
 import getSingleMeal from '@api/meals';
 import dynamic from 'next/dynamic';
 
-
-
 const SavedMeals = () => {
+	const { colorMode } = useColorMode('dark');
+	const isDark = colorMode === 'dark';
 
-	const ListItems = dynamic(() => import('@components/ListItems/ListItems')) 
+	const ListItems = dynamic(() => import('@components/ListItems/ListItems'));
 	const [savedMealsId, setSavedMealsId] = useState([]);
 
 	const queries = savedMealsId.map(id => ({
@@ -18,8 +25,6 @@ const SavedMeals = () => {
 	}));
 
 	const result = useQueries({ queries });
-
-	
 
 	useEffect(() => {
 		if (localStorage.getItem('savedMeals')) {
@@ -46,30 +51,33 @@ const SavedMeals = () => {
 					result.map(({ data, isLoading }, index) => {
 						if (isLoading) {
 							return (
-								<BeatLoader color="white" key={savedMealsId[index]}></BeatLoader>
+								<BeatLoader
+									color="white"
+									key={savedMealsId[index]}
+								></BeatLoader>
 							);
 						}
 
 						return (
 							<Link href={`/meals/${data.idMeal}`} key={data.idMeal} h="100%">
 								<Box
-									bg="#393b40"
+									bg={colorMode === 'dark' ? 'bgBox' : 'btn.cornsilk'}
 									p="2rem"
 									borderRadius="6px"
 									display="block"
 									h="100%"
 								>
-									<Text
-										as="p"
-										color="text"
-										fontSize="1.5rem"
-										
-									>
+									<Text as="p" color="text" fontSize="1.5rem">
 										{data.strMeal}
 									</Text>
 									<UnorderedList justify="center" align="center">
-										<ListItems>{data.strCategory}</ListItems>
-										<ListItems>{data.strArea}</ListItems>
+										{data?.strCategory ? (
+											<ListItems> Category: {data.strCategory}</ListItems>
+										) : null}
+
+										{data?.strArea ? (
+											<ListItems>Area: {data.strArea}</ListItems>
+										) : null}
 									</UnorderedList>
 								</Box>
 							</Link>

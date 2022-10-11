@@ -14,7 +14,7 @@ const ListItems = ({ children }) => {
 			<Flex align="center">
 				<ListIcon as={Circle} bg="bgPrimary" fontSize=".7rem" />
 				<Box justify="center" align="center" gap="1rem">
-					Category: {" "} {children}
+					{" "} {children}
 				</Box>
 			</Flex>
 		</ListItem>
