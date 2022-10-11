@@ -11,7 +11,6 @@ const getCategories =async () => {
 
 const getMeals =async({queryKey}) => {
     const { data } = await client.get(`filter.php?c=${queryKey[1]}`);
-    
     return data?.meals || [];
 };
   
@@ -23,7 +22,7 @@ const getQueriedMeals = async ({queryKey}) => {
 const getSingleMeal = async ({ queryKey }) => {
     const { data } = await client.get(`/lookup.php?i=${queryKey[1]}`);
  
-    return data?.meals?.[0];
+    return data.meals?.[0]
 };
 
 

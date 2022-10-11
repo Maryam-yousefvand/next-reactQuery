@@ -15,9 +15,11 @@ const override = {
 };
 
 function Meals() {
-    const SearchBar = dynamic(()=> import('@components/mealspage/SearchBar'))
-	const Categories = dynamic(() => import('@components/categories/Categories'))
-	const SingleMealCard = dynamic(()=> import('@components/mealspage/SingleMealCard'))
+	const SearchBar = dynamic(() => import('@components/mealspage/SearchBar'));
+	const Categories = dynamic(() => import('@components/categories/Categories'));
+	const SingleMealCard = dynamic(() =>
+		import('@components/mealspage/SingleMealCard')
+	);
 
 	const [selectedCategory, setSelectedCategory] = useState('');
 	const [searchText, setSearchText] = useState('');
@@ -27,10 +29,10 @@ function Meals() {
 		data: categories,
 		isLoading: categoriesIsLoading,
 		isError: categoriesIsError,
-	} = useMemo(() => useAllCategories());
+	} = useAllCategories();
 
-	const { data, isLoading, isError } =  useMemo(()=>useSelectedCategory(selectedCategory));
-	
+	const { data, isLoading, isError } = useSelectedCategory(selectedCategory)
+
 	const {
 		data: queriedData,
 		isLoading: queriedIsLoading,
@@ -39,7 +41,8 @@ function Meals() {
 
 	useEffect(() => {
 		if (categories) {
-			setSelectedCategory(categories[0].strCategory);
+			setSelectedCategory(a);
+			
 		}
 	}, [categories]);
 
@@ -51,7 +54,7 @@ function Meals() {
 			} else {
 				setQuery('');
 				if (categories) {
-					setSelectedCategory(categories[0].strCategory);
+					setSelectedCategory(a);
 				}
 			}
 		}, 300);
@@ -60,6 +63,8 @@ function Meals() {
 			clearTimeout(timeout);
 		};
 	}, [searchText, categories]);
+
+	const a = useMemo(() => categories?.[0]?.strCategory ?? null, [categories?.[0]?.strCategory]);
 
 	return (
 		<Box as="div" py="5rem">

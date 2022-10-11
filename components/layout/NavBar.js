@@ -8,7 +8,11 @@ function NavBar() {
 	const { colorMode, toggleColorMode } = useColorMode('dark')
 
 	return (
-		<Flex as="nav" justify="space-between" align="center" py="2rem">
+		<Flex as="nav" justify="space-between" align="center" py="2rem" px='5vw'
+		 boxShadow={colorMode==='light'? 
+		 ("0px 0px 5px gray") : 
+		 ("none")}
+		>
 			<Link href="/">
 				<Box maxW="150px">
 

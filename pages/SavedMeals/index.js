@@ -7,8 +7,6 @@ import dynamic from 'next/dynamic';
 
 
 
-
-
 const SavedMeals = () => {
 
 	const ListItems = dynamic(() => import('@components/ListItems/ListItems')) 
@@ -19,7 +17,7 @@ const SavedMeals = () => {
 		queryFn: getSingleMeal,
 	}));
 
-	const result =   useQueries({ queries });
+	const result = useQueries({ queries });
 
 	
 

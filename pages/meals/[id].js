@@ -6,7 +6,7 @@ import { BeatLoader } from 'react-spinners';
 
 
 import toast from 'react-hot-toast';
-import { useSingleMeal,useSelectedCategory } from '@hooks/meals';
+import { useSingleMeal } from '@hooks/meals';
 import {
 	Box,
 	Button,
@@ -42,6 +42,7 @@ function SingleMealPage() {
 	useEffect(() => {
 		if (localStorage.getItem('savedMeals')) {
 			const savedMeals = JSON.parse(localStorage.getItem('savedMeals'));
+			console.log(savedMeals);
 			if (savedMeals.includes(id)) {
 				setIsSaved(true);
 			} else {
@@ -51,23 +52,23 @@ function SingleMealPage() {
 			localStorage.setItem('savedMeals', JSON.stringify([]));
 		}
 	}, [id]);
-
+	
 
 
 	if (isLoading && !data) {
 		return <BeatLoader color="#fff" />;
 	}
-
+    // console.log(data);
 	const ingredients = Object.keys(data)
 		.filter(key => key.startsWith('strIngredient'))
 		.filter(key => data[key] !== '' && data[key] !== null);
-
+    console.log(ingredients )
 	const ingredientsWithMeasures = ingredients.map((key, index) => ({
 		index: index + 1,
 		ingredient: data[key],
 		measure: data[`strMeasure${index + 1}`],
 	}));
-
+	console.log(ingredientsWithMeasures);
 	const handleSaveButtonClick = async () => {
 		const savedMeals = JSON.parse(localStorage.getItem('savedMeals'));
 		if (!isSaved) {
@@ -86,7 +87,7 @@ function SingleMealPage() {
 	return (
 
 		<>
-		{id ? (
+		{id? (
 					<Box py="10rem">
 					<Flex justify="flex-start" align="flex-start" gap="5rem">
 						<Box>
